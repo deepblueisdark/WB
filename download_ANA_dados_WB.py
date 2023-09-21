@@ -203,14 +203,15 @@ for cod in cod_list:
   c= pd.DataFrame()
   print(cod)
   estacao=ana.inventario(cod,2,0)
+  # em 15/09/2023 -- coloquei indoce [0] nos campos. duplicatas davam erro 
   if len(estacao) == 0:
      continue
   else:  	 
       Nome=estacao['nome'][0]
-      latitude=float(estacao['latitude']) 
-      longitude=float(estacao['longitude'])
+      latitude=(estacao['latitude'][0]) 
+      longitude=(estacao['longitude'][0])
       altitude=estacao['altitude'][0]
-
+ 
   try:
     a = ana.obter_chuva(cod, '01/01/1900', date.today().strftime('%d/%m/%Y'))
     if not a.empty:

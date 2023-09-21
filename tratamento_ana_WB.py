@@ -9,7 +9,7 @@
 #
 #----------------------------------------------------------------------------------
 # Data: 24/08/2023 - Finalziação do codigo  (falta calculo do tempo de recorrencia)
-# 
+# Data: 05/09/2023 - colcoacao das datas no nome de arquivo final.  
 #
 #
 #
@@ -31,7 +31,7 @@ import scipy.stats as stats
 #
 # Lista de arquivos CSV a serem lidos
 #
-arquivos_csv = glob.glob('./BAHIA/*.csv')
+arquivos_csv = glob.glob('./ANA/*.csv')
 
 #-------------------------------------------------------------------------------------
 #
@@ -133,8 +133,8 @@ def calcular_varios_periodo(df, inicio, fim):
        per_semdados=0
        per_dados_validos=0 
     else:
-       status=0	
-       num_dados_totais = len(periodo)
+       status=0 
+       num_dados_totais = (fim - inicio).days ###len(periodo)
        num_dias = (fim - inicio).days  # Calcular número de dias
        num_dados_validos=sem_chuva+com_chuva
        per_semchuva=sem_chuva/num_dados_totais
@@ -170,11 +170,11 @@ def processar_arquivo(arquivo,data1="",data2=""):
         df['tipo'] = df['chuva'].apply(lambda x: 'chuva' if x > 0 else ('semchuva' if x == 0 else 'outros'))
 
         #
-		#
-		# avalia se os parametros data1 e data2 foram inseridos na funcao. 
+        #
+        # avalia se os parametros data1 e data2 foram inseridos na funcao. 
         # caso sejam nulos ele faz o tratamento de todo o peridoo do arquivo
         # caos sejam inseridos os parametros data1 e data2 calculo no periodo
-        #		
+        #       
         if data1 == "":
            data_inicial = df['data'].min()
         else:
@@ -183,13 +183,13 @@ def processar_arquivo(arquivo,data1="",data2=""):
            data_final = df['data'].max()
         else:
            data_final = data2
-		   
+           
         #
-		# status=0 (tem dados)
-		#       =1 (completamente sem dados)  
-		
+        # status=0 (tem dados)
+        #       =1 (completamente sem dados)  
+        
         status,sem_chuva,com_chuva,sem_dados,soma_da_chuva,num_dados_totais,num_dias,dados_validos,per_semchuva,per_comchuva,per_semdados,per_dados_validos = calcular_varios_periodo(df,data_inicial,data_final)
-		
+        
         if status == 0:  
          
             # # Calcular o máximo valor de chuva
@@ -226,8 +226,11 @@ def processar_arquivo(arquivo,data1="",data2=""):
 #
 #
 #
-inicio='1981-01-01' 
-fim='2010-12-31' 
+inicio='1991-01-01' 
+fim='2020-12-31' 
+inicio_hist=datetime.strptime("3000-01-01","%Y-%m-%d")
+final_hist=datetime.strptime("1900-01-01","%Y-%m-%d")
+
 #
 #
 # Criar um arquivo Excel e uma planilha
@@ -239,15 +242,14 @@ ws = wb.active
 ws = wb.create_sheet(title="TODOS")
 ws2 = wb.create_sheet(title="CLIMA")
 
-ws.append(["Arquivo", "Nome","codigo","longitude","latitude","altititude","Data Inicial", "Data Final", "Dados Totais", "Número de Dias", "Sem Chuva", "Com Chuva", 
-           "dados validos","Sem dados", "per_semchuva","per_comchuva","per_dados_validos","perc_semdados","soma","Media",
-           "Máximo Chuva", "Desvio Padrao","Variancia","Tempo de Retorno", 
-           "P5 Chuva", "P10 Chuva", "P20 Chuva", "P25 Chuva", "P50 Chuva", "P75 Chuva", "P90 Chuva", "P95 Chuva", "P99 Chuva"])
+header=["Arquivo", "Nome","Codigo","Longitude","Latitude","Altitude",
+        "Data Inicial", "Data Final", "Dados Totais", "Numero de Dias", "Sem Chuva", "Com Chuva", 
+        "Dados Validos","Sem Dados", "Per. Sem Chuva","Per. Com Chuva","Per. Dados Validos","Per. Sem Dados","Soma","Media",
+        "Maximo Chuva", "Desvio Padrao","Variancia",
+        "P05", "P10", "P20", "P25", "P50", "P75", "P90", "P95", "P99"]
+ws.append(header)
 
-ws2.append(["Arquivo", "Nome","codigo","longitude","latitude","altititude","Data Inicial", "Data Final", "Dados Totais", "Número de Dias", "Sem Chuva", "Com Chuva", 
-           "dados validos","Sem dados", "per_semchuva","per_comchuva","per_dados_validos","perc_semdados","soma","Media",
-           "Máximo Chuva", "Desvio Padrao","Variancia","Tempo de Retorno", 
-           "P5 Chuva", "P10 Chuva", "P20 Chuva", "P25 Chuva", "P50 Chuva", "P75 Chuva", "P90 Chuva", "P95 Chuva", "P99 Chuva"])
+ws2.append(header)
 
 
 # Processar cada arquivo CSV
@@ -274,13 +276,31 @@ for arquivo in arquivos_csv:
         per_semchuva,per_comchuva,per_dados_validos,per_semdados,
         soma_chuva,media_chuva,max_chuva,desvpad_chuva,variancia_chuva,tempo_retorno,
         percentis_chuva[0.05], percentis_chuva[0.10], percentis_chuva[0.20], percentis_chuva[0.25], percentis_chuva[0.50], percentis_chuva[0.75], percentis_chuva[0.90], percentis_chuva[0.95], percentis_chuva[0.99]]) 
-        print(arquivo," foi processado") 		
+        print(arquivo," foi processado")        
     else:
         print(arquivo," Não foi processado")
 
+         
     # Converter as strings de data em objetos datetime
     data1 = datetime.strptime(inicio, "%Y-%m-%d")
     data2 = datetime.strptime(fim, "%Y-%m-%d")
+    if ( data_inicial < inicio_hist ):
+        inicio_hist=data_inicial
+    
+    if ( data_final > final_hist ):
+        final_hist=data_final   
+    
+    data3_str = data1.strftime("%Y%m%d")
+    data4_str = data2.strftime("%Y%m%d")
+    
+    data2_str = final_hist.strftime("%Y%m%d")
+    data1_str = inicio_hist.strftime("%Y%m%d")
+    
+
+    # Crie o nome do arquivo de saída com base nas datas formatadas
+    nome_arquivo_saida = f"relatorio_ana_{data1_str}_a_{data2_str}_e_{data3_str}_a_{data4_str}.xlsx"
+    
+    
     resultado = processar_arquivo(arquivo,data1,data2)
     if resultado:
         data_inicial, data_final , num_dias,num_dados_totais,sem_chuva,com_chuva,dados_validos,sem_dados, per_semchuva,per_comchuva,per_dados_validos,per_semdados,soma_chuva,media_chuva,max_chuva,desvpad_chuva,variancia_chuva,tempo_retorno, percentis_chuva = resultado
@@ -293,6 +313,6 @@ for arquivo in arquivos_csv:
         print(arquivo," Não foi processado no periodo:",data1," a ",data2)
 
 
-# Salvar o arquivo Excel
-wb.save("relatorio.xlsx")
-print("Relatório gerado e salvo como 'relatorio.xlsx'")
+# Salvar o arquivo Excel com o nome gerado
+wb.save(nome_arquivo_saida)
+print(f"Relatório gerado e salvo como '{nome_arquivo_saida}'")

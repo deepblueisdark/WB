@@ -83,7 +83,7 @@ gdf = gpd.read_file(shapefile_path)
 #
 #
 #
-file_path = "relatorio_ana_19070701_a_20230531_e_19910101_a_20201231.xlsx"
+file_path = "relatorio_inmet_CONV_19610101_a_20221231_e_19910101_a_20201231.xlsx"
 sheet_name = "TODOS"  # Substitua pelo nome correto da planilha, se necessário
 #
 #
@@ -100,10 +100,10 @@ df = pd.read_excel(file_path, sheet_name=sheet_name)
 # perc. minimo : percentual mínimo de dados válidos (coluna Q na planilha)
 # perc. máxima : percentual máxima de dados válidos (coluna Q na planilha)
 #
-plota_estacoes(df,"estacoes_ANA_CONV_BAHIA_100_a_80_per.png",1.0,.80," Para cada estação") 
-plota_estacoes(df,"estacoes_ANA_CONV_BAHIA_100_a_60_per.png",1.0,.60," Para cada estação")  
-plota_estacoes(df,"estacoes_ANA_CONV_BAHIA_100_a_50_per.png",1.0,.50," Para cada estação")  
-plota_estacoes(df,"estacoes_ANA_CONV_BAHIA_todo_o_conjunto.png",1,0," Para cada estação") 
+plota_estacoes(df,"estacoes_INMET_CONV_BAHIA_100_a_80_per.png",1.0,.80," Para cada estação") 
+plota_estacoes(df,"estacoes_INMET_CONV_BAHIA_100_a_60_per.png",1.0,.60," Para cada estação")  
+plota_estacoes(df,"estacoes_INMET_CONV_BAHIA_100_a_50_per.png",1.0,.50," Para cada estação")  
+plota_estacoes(df,"estacoes_INMET_CONV_BAHIA_todo_o_conjunto.png",1,0," Para cada estação") 
 #
 # ABA CLIMA
 #
@@ -112,11 +112,50 @@ plota_estacoes(df,"estacoes_ANA_CONV_BAHIA_todo_o_conjunto.png",1,0," Para cada 
 #
 #
 df = pd.read_excel(file_path, sheet_name="CLIMA")
-plota_estacoes(df,"estacoes_ANA_CONV_BAHIA_100_a_80_per_1991a20202.png",1.0,.80," Periodo: 1991-2020") 
-plota_estacoes(df,"estacoes_ANA_CONV_BAHIA_100_a_60_per_1991a20202.png",1.0,.60," Periodo: 1991-2020")  
-plota_estacoes(df,"estacoes_ANA_CONV_BAHIA_100_a_50_per_1991a20202.png",1.0,.50," Periodo: 1991-2020")  
-plota_estacoes(df,"estacoes_ANA_CONV_BAHIA_todo_o_conjunto_1991a20202.png",1,0, " Periodo: 1991-2020") 
-plota_estacoes(df,"estacoes_ANA_CONV_BAHIA_descartados_1991a20202.png",.30,0,   " Periodo: 1991-2020") 
-plota_estacoes(df,"estacoes_ANA_CONV_BAHIA_30_a_50_per_1991a20202.png",.50,.30, " Periodo: 1991-2020") 
+plota_estacoes(df,"estacoes_INMET_CONV_BAHIA_100_a_80_per_1991a20202.png",1.0,.80," Periodo: 1991-2020") 
+plota_estacoes(df,"estacoes_INMET_CONV_BAHIA_100_a_60_per_1991a20202.png",1.0,.60," Periodo: 1991-2020")  
+plota_estacoes(df,"estacoes_INMET_CONV_BAHIA_100_a_50_per_1991a20202.png",1.0,.50," Periodo: 1991-2020")  
+plota_estacoes(df,"estacoes_INMET_CONV_BAHIA_todo_o_conjunto_1991a20202.png",1,0, " Periodo: 1991-2020") 
+plota_estacoes(df,"estacoes_INMET_CONV_BAHIA_descartados_1991a20202.png",.30,0,   " Periodo: 1991-2020") 
+plota_estacoes(df,"estacoes_INMET_CONV_BAHIA_30_a_50_per_1991a20202.png",.50,.30, " Periodo: 1991-2020") 
 
+
+
+#
+#
+file_path = "relatorio_inmet_TEL_20000512_a_20231231_e_19910101_a_20201231.xlsx"
+sheet_name = "TODOS"  # Substitua pelo nome correto da planilha, se necessário
+#
+#
+#  ABA TODOS
+#
+#
+df = pd.read_excel(file_path, sheet_name=sheet_name)
+#
+# PLOTA DISTRIBUIÇÃO 
+#
+# plota_estacoes(df,<nome da figura>, perc. minimo, perc. máximo, [observações] )
+#
+# nome da figura: nome da figura em png 
+# perc. minimo : percentual mínimo de dados válidos (coluna Q na planilha)
+# perc. máxima : percentual máxima de dados válidos (coluna Q na planilha)
+#
+plota_estacoes(df,"estacoes_INMET_TEL_BAHIA_100_a_80_per.png",1.0,.80," Para cada estação") 
+plota_estacoes(df,"estacoes_INMET_TEL_BAHIA_100_a_60_per.png",1.0,.60," Para cada estação")  
+plota_estacoes(df,"estacoes_INMET_TEL_BAHIA_100_a_50_per.png",1.0,.50," Para cada estação")  
+plota_estacoes(df,"estacoes_INMET_TEL_BAHIA_todo_o_conjunto.png",1,0," Para cada estação") 
+#
+# ABA CLIMA
+#
+#
+# PLOTA DISTRIBUIÇAO DOS DADOS 
+#
+#
+df = pd.read_excel(file_path, sheet_name="CLIMA")
+plota_estacoes(df,"estacoes_INMET_TEL_BAHIA_100_a_80_per_1991a20202.png",1.0,.80," Periodo: 1991-2020") 
+plota_estacoes(df,"estacoes_INMET_TEL_BAHIA_100_a_60_per_1991a20202.png",1.0,.60," Periodo: 1991-2020")  
+plota_estacoes(df,"estacoes_INMET_TEL_BAHIA_100_a_50_per_1991a20202.png",1.0,.50," Periodo: 1991-2020")  
+plota_estacoes(df,"estacoes_INMET_TEL_BAHIA_todo_o_conjunto_1991a20202.png",1,0, " Periodo: 1991-2020") 
+plota_estacoes(df,"estacoes_INMET_TEL_BAHIA_descartados_1991a20202.png",.30,0,   " Periodo: 1991-2020") 
+plota_estacoes(df,"estacoes_INMET_TEL_BAHIA_30_a_50_per_1991a20202.png",.50,.30, " Periodo: 1991-2020") 
 

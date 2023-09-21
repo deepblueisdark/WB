@@ -15,12 +15,6 @@ import geopandas as gpd
 import matplotlib.pyplot as plt
 from netCDF4 import Dataset
 from matplotlib.colors import ListedColormap
-from scipy.spatial.distance import cdist
-
-
-
-
-
 def save_to_netcdf(filename, longitude, latitude, variable_name, data):
     rootgrp = Dataset(filename, "w", format="NETCDF4")
     
@@ -38,19 +32,6 @@ def save_to_netcdf(filename, longitude, latitude, variable_name, data):
     
     rootgrp.close()
 
-def interpola_idw(obs_longitudes, obs_latitudes, values_to_interpolate, grid):
-    interpolated_values = np.zeros((len(grid['lon']), len(grid['lat'])))
-    
-    for i in range(len(grid['lon'])):
-        for j in range(len(grid['lat'])):
-            point = (grid['lon'][i], grid['lat'][j])
-            distances = np.sqrt((obs_longitudes - point[0])**2 + (obs_latitudes - point[1])**2)
-            weights = 1.0 / (distances**2)
-            interpolated_values[i, j] = np.sum(weights * values_to_interpolate) / np.sum(weights)
-    
-    return interpolated_values
-	
-	
 
 def interpola(obs_longitudes,obs_latitudes,values_to_interpolate,variograma,grid):
     # Coordenadas da grade para interpolação (você pode ajustar isso conforme necessário)
@@ -106,7 +87,7 @@ def plota_interp(grid_x,grid_y,z,niveis,colormap,obs_longitudes,obs_latitudes,va
     cbar.set_label("Media", labelpad=15)
        
 	
-    plt.title("Interpolação com "+modelo)
+    plt.title("Interpolação com Kriging "+modelo)
     plt.xlabel("Longitude")
     plt.ylabel("Latitude")
     plt.grid(True)
@@ -157,22 +138,9 @@ for model in modelos:
     z,grid_x,grid_y = interpola(obs_longitudes,obs_latitudes,values_to_interpolate,model,grid)
 
     # plota
-    plota_interp(grid_x,grid_y,z,20,'coolwarm',obs_longitudes,obs_latitudes,values_to_interpolate,"Media","interp_clima_krigging_"+model,"Krigging "+model)
+    plota_interp(grid_x,grid_y,z,20,'coolwarm',obs_longitudes,obs_latitudes,values_to_interpolate,"Media","interp_clima_krigging_"+model,model)
 
     # Salva em NetCDF
     netcdf_filename = "interp_clima_krigging_" + model + ".nc"
     save_to_netcdf(netcdf_filename, grid_x[0, :], grid_y[:, 0], "Media", z)	
 
-
-# Interpolação IDW
-z_idw = interpola_idw(obs_longitudes, obs_latitudes, values_to_interpolate, grid)
-
-# Combinar as interpolações Kriging e IDW
-#z_final = (z + z_idw) / 2.0
-
-# Plota e salva
-plota_interp(grid_x, grid_y, z_idw, 20, 'coolwarm', obs_longitudes, obs_latitudes, values_to_interpolate, "Media", "interp_clima_idw", "IDW")
-
-# Salva em NetCDF
-netcdf_filename = "interp_clima_idw.nc"
-save_to_netcdf(netcdf_filename, grid_x[0, :], grid_y[:, 0], "Media", z_idw)
